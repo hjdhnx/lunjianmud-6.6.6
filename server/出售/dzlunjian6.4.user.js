@@ -1,0 +1,126 @@
+// ==UserScript==
+// @name        道长论剑DZ正版（传说）
+// @namespace    http://playdreamer.cn/
+// @include      http://*.yytou.c*
+// @version      6.6.6
+// @description  道长发布的强大脚本，by道长论剑论坛。特别鸣谢虹雪恩新
+// @author       道长
+// @grant        none
+// ==/UserScript==
+
+/*青龙物品参考表
+天寒：狂暴丹小还丹乾坤再造丹紫芝灵草天寒帽天寒戒天寒鞋天寒项链天寒手镯软甲衣金刚杖飞羽剑斩空刀拜月掌套金弹子新月棍白蟒鞭
+残雪：疯魔杖毒龙鞭玉清棍生死符霹雳掌套血屠刀星河剑残雪帽残雪戒残雪鞋残雪手镯残雪项链金丝宝甲衣
+明月：烈日棍西毒蛇杖冰魄银针碧磷鞭--倚天剑屠龙刀墨玄掌套明月帽明月鞋明月项链明月戒月光宝甲衣明月手镯星月大斧碧玉锤霸王枪
+烈日：残阳棍伏虎杖暴雨梨花针七星鞭--诛仙剑斩神刀龙象拳套烈日帽烈日宝靴烈日宝链烈日宝戒日光宝甲衣烈日宝镯破冥斧撼魂锤赤焰枪
+斩龙：开天宝棍达摩杖小李飞刀乌金玄火鞭--九天龙吟剑飞宇天怒刀天罡掌套斩龙帽斩龙宝靴斩龙宝链斩龙宝戒龙皮至尊甲衣斩龙宝镯天雷断龙斧烛幽鬼煞锤斩龙鎏金枪
+胤天：胤天宝帽碎片胤天项链碎片胤天宝镯碎片胤天宝戒碎片胤天宝靴碎片胤天紫金衣碎片昊天龙旋铠碎片鱼肠碎片水羽云裳碎片奉天金带碎片凤羽乾坤盾碎片轩辕剑碎片破岳拳套碎片天雨玄镖碎片天神杖碎片轰天巨棍碎片神龙怒火鞭碎片雷霆诛神刀碎片胤武伏魔斧碎片九天灭世锤碎片玄冰凝魄枪碎片紫枫玉华环碎片
+花草药材:彼岸花熙颜凤凰木洛神花君影草矢车菊忘忧草雪英夕雾草朝开暮落花晚香玉朽凌霄花百宜雪梅
+*/
+/*装备对应绝学备注
+带棍子群伤为阵法伤害的(23.8%~29.75%)
+带剑群伤为阵法伤害的(26.4%~33%)
+带拳群伤为阵法伤害的(16.7%~20.9%)
+对手无免伤全伤害如店小二逄义，帮副怪，直接取群伤最大值
+对手有免伤如柳淳风，本7怪，闯楼怪，直接取群伤最小值
+武器有剑（没剑有棍子稍微差点儿）与棍子组阵的实际单体伤害，等于阵法显示伤害的1.25倍，比如阵法显示打了4000w，实际造成的是5000w单体伤害
+推荐玩法，武器带枪剑，阵法单体玩九天+燎原，附加群伤千影棍
+很多技能玩枪棍的人，推荐带武器为枪剑，实测群伤为阵法伤害的1/4以上比枪棍还多点儿。枪拳群伤不行的，所以武器别带枪拳
+玩棍剑的人，推荐不要玩棍拳，千影排云寒霜六脉，伤害太低了，不如千影九天寒霜棍+独孤或者真武
+千影九天有暴击，黑字大概是原先的1.25倍伤害。同样属性，棍剑还没阵，棍拳有阵，经过对比，棍剑比棍拳多30%伤害
+*/
+buju='auto';//自定义布局右移变量（默认是自动适配，自定义请输入不带引号的数字比如100）
+qlreq='----天雷断龙斧烛幽鬼煞锤斩龙鎏金枪星月大斧碧玉锤霸王枪破冥斧撼魂锤赤焰枪狂暴丹烈日棍西毒蛇杖冰魄银针碧磷鞭-倚天剑屠龙刀墨玄掌套明月帽明月鞋明月项链明月戒月光宝甲衣明月手镯烈日帽诛仙剑烈日宝戒烈日宝镯烈日宝靴烈日宝链伏虎仗七星鞭残阳棍达摩杖开天宝棍乌金玄火鞭日光宝甲衣胤天宝帽碎片胤天项链碎片胤天宝镯碎片胤天宝戒碎片胤天宝靴碎片胤天紫金衣碎片昊天龙旋铠碎片鱼肠碎片水羽云裳碎片奉天金带碎片凤羽乾坤盾碎片轩辕剑碎片破岳拳套碎片天雨玄镖碎片天神杖碎片轰天巨棍碎片神龙怒火鞭碎片雷霆诛神刀碎片胤武伏魔斧碎片九天灭世锤碎片玄冰凝魄枪碎片紫枫玉华环碎片彼岸花熙颜凤凰木洛神花君影草矢车菊忘忧草雪英夕雾草朝开暮落花晚香玉朽凌霄花百宜雪梅';
+//青龙需求设置
+kf_qlreq='九天龙吟剑飞宇天怒刀天罡掌套斩龙帽斩龙宝靴斩龙宝链斩龙宝戒龙皮至尊甲衣斩龙宝镯天雷断龙斧烛幽鬼煞锤斩龙鎏金枪天雷断龙斧烛幽鬼煞锤斩龙鎏金枪达摩杖开天宝棍乌金玄火鞭小李飞刀日光宝甲衣胤天宝帽碎片胤天项链碎片胤天宝镯碎片胤天宝戒碎片胤天宝靴碎片胤天紫金衣碎片昊天龙旋铠碎片鱼肠碎片水羽云裳碎片奉天金带碎片凤羽乾坤盾碎片轩辕剑碎片破岳拳套碎片天雨玄镖碎片天神杖碎片轰天巨棍碎片神龙怒火鞭碎片雷霆诛神刀碎片胤武伏魔斧碎片九天灭世锤碎片玄冰凝魄枪碎片紫枫玉华环碎片彼岸花熙颜凤凰木洛神花君影草矢车菊忘忧草雪英夕雾草朝开暮落花晚香玉朽凌霄花百宜雪梅';
+//新开跨服青龙需求设置
+enforcePoints = 1005;//加力点数设置
+myForce = "道种心魔经";//回血内功设置
+myDodge = "乾坤大挪移";//刷碎片轻功设置
+ssp_site=1;//刷碎片地点设置（1234分别是醉汉，地痞，地痞，青竹蛇）
+limitQixue = "180000";//出绝学时战斗中生命值低于该线自动使用内功回血
+mySkillLists="九天龙吟剑法;排云掌法;雪饮狂刀";//出招表设置，可以只设置两个或者一个，两个的绝学阵
+ai_chuzhao=0;//出绝学如果设置不对，自动切换成开出招
+kgg_flag=0;//每次刷新网页默认会自动提示道长公告（0关闭）
+quid1="11-15";//区段设置，若是新区只需要填新
+ql_delay='18000';//青龙自定义延时，单位毫秒
+jd_save=3000;//智能奇侠预留保底金锭（数量之下不会自动每次送15，但能执行出5次秘境模式）
+skillset={//按号分类默认总设置（逗号与分号都是英文格式，从左往右逗号隔开依次是出招，内功，加力，回血下限，区段，智能奇侠预留金锭）
+	"剑行":"排云掌法,茅山道术,200,10000,11-15,1000",
+	"李逍遥_":"如来神掌;独孤九剑,茅山道术,700,30000,11-15,1000",
+	"无☆风不起浪":"千影百伤棍;九天龙吟剑法,道种心魔经,1635,400000,1-5,默认",
+	"道花1":"排云掌法,易筋经神功,500,30000,11-15,1000",
+	"施工员":"九天龙吟剑法;排云掌法,道种心魔经,1425,200000,1-5,默认",
+	"多☆情应笑我":"千影百伤棍;燎原百破,道种心魔经,1585,400000,1-5,默认",
+	"独☆钓寒江雪":"覆雨剑法;如来神掌,道种心魔经,955,140000,1-5,默认",
+	"飘过云朵":"九溪断月枪,道种心魔经,1927,600000,1-5,默认",
+};
+skillset1={//按号分类默认设置一键换装的武器,分号前面的先穿，分号后面的后穿（暂只支持斩龙胤天的神兵武器）,撩奇侠的顺序（请注意武器分隔号是英文的分号，奇侠分隔号是中文的分号，武器和奇侠之间英文的逗号隔开）
+	"无☆风不起浪":"轩辕剑;玄冰凝魄枪,默认",
+	"多☆情应笑我":"轩辕剑;玄冰凝魄枪,步惊鸿；郭济；浪唤雨；火云邪神；逆风舞；穆妙羽；庞统；吴缜；王蓉；风南；狐苍雁；李宇飞；风行骓；护竺；玄月研；狼居胥；烈九州；宇文无敌；李玄霸；八部龙将；风无痕；厉沧若；夏岳卿；妙无心；巫夜姬",
+	"飘过云朵":"轩辕剑;玄冰凝魄枪,默认",
+	"施工员":"九天龙吟剑;天罡掌套,步惊鸿；郭济；浪唤雨；火云邪神；逆风舞；庞统；吴缜；王蓉；风南；狐苍雁；李宇飞；风行骓；护竺；玄月研；狼居胥；烈九州；穆妙羽；宇文无敌；李玄霸；八部龙将；风无痕；厉沧若；夏岳卿；妙无心；巫夜姬",
+};
+skillset2={//按号分类设置青龙杀人选项，托管选项,托管刷碎片地点,托管吃江湖令,托管吃帮派令,托管挂机铁血10分钟,青龙需求（0杀好1杀坏）
+	"无☆风不起浪":"1,2,2,0,1,1,默认",
+	"独☆钓寒江雪":"1,2,1,0,0,0,默认",
+	"飘过云朵":"1,2,1,1,1,1,默认",
+	"多☆情应笑我":"1,2,3,1,1,1,九天龙吟剑飞宇天怒刀天罡掌套斩龙帽斩龙宝靴斩龙宝链斩龙宝戒龙皮至尊甲衣斩龙宝镯天雷断龙斧烛幽鬼煞锤斩龙鎏金枪天雷断龙斧烛幽鬼煞锤斩龙鎏金枪达摩杖开天宝棍乌金玄火鞭小李飞刀日光宝甲衣胤天宝帽碎片胤天项链碎片胤天宝镯碎片胤天宝戒碎片胤天宝靴碎片胤天紫金衣碎片昊天龙旋铠碎片鱼肠碎片水羽云裳碎片奉天金带碎片凤羽乾坤盾碎片轩辕剑碎片破岳拳套碎片天雨玄镖碎片天神杖碎片轰天巨棍碎片神龙怒火鞭碎片雷霆诛神刀碎片胤武伏魔斧碎片九天灭世锤碎片玄冰凝魄枪碎片紫枫玉华环碎片彼岸花熙颜凤凰木洛神花君影草矢车菊忘忧草雪英夕雾草朝开暮落花晚香玉朽凌霄花百宜雪梅",
+	"剑行":"1,2,3,0,0,0,默认",
+	"李逍遥_":"0,2,1,0,0,0,斩龙宝链斩龙宝靴斩龙宝戒天罡掌套小李飞刀星月大斧碧玉锤霸王枪破冥斧撼魂锤赤焰枪狂暴丹烈日棍冰魄银针碧磷鞭-倚天剑屠龙刀墨玄掌套明月帽明月鞋明月项链明月戒月光宝甲衣明月手镯烈日帽诛仙剑烈日宝戒烈日宝镯烈日宝靴烈日宝链伏虎仗七星鞭残阳棍彼岸花熙颜凤凰木洛神花君影草矢车菊忘忧草雪英夕雾草朝开暮落花晚香玉朽凌霄花百宜雪梅",
+	"施工员":"1,2,4,0,0,0,天雷断龙斧烛幽鬼煞锤斩龙鎏金枪星月大斧碧玉锤霸王枪破冥斧撼魂锤赤焰枪狂暴丹烈日棍冰魄银针碧磷鞭-倚天剑屠龙刀墨玄掌套明月帽明月鞋明月项链明月戒月光宝甲衣明月手镯烈日帽诛仙剑烈日宝戒烈日宝镯烈日宝靴烈日宝链伏虎仗七星鞭残阳棍达摩杖开天宝棍乌金玄火鞭日光宝甲衣胤天宝帽碎片胤天项链碎片胤天宝镯碎片胤天宝戒碎片胤天宝靴碎片胤天紫金衣碎片昊天龙旋铠碎片鱼肠碎片水羽云裳碎片奉天金带碎片凤羽乾坤盾碎片轩辕剑碎片破岳拳套碎片天雨玄镖碎片天神杖碎片轰天巨棍碎片神龙怒火鞭碎片雷霆诛神刀碎片胤武伏魔斧碎片九天灭世锤碎片玄冰凝魄枪碎片紫枫玉华环碎片彼岸花熙颜凤凰木洛神花君影草矢车菊忘忧草雪英夕雾草朝开暮落花晚香玉朽凌霄花百宜雪梅",
+	"道花1":"1,2,4,0,0,0,斩龙帽斩龙宝靴龙皮至尊甲衣斩龙宝镯天罡掌套小李飞刀星月大斧碧玉锤霸王枪破冥斧撼魂锤赤焰枪狂暴丹烈日棍冰魄银针碧磷鞭-倚天剑屠龙刀墨玄掌套明月帽明月鞋明月项链明月戒月光宝甲衣明月手镯烈日帽诛仙剑烈日宝戒烈日宝镯烈日宝靴烈日宝链伏虎仗七星鞭残阳棍彼岸花熙颜凤凰木洛神花君影草矢车菊忘忧草雪英夕雾草朝开暮落花晚香玉朽凌霄花百宜雪梅",
+};
+skillset3={//按号分类设置智能奇侠参数:智能奇侠顺序，智能奇侠模式，是否托管奇侠,是否智能换突破,换突破顺序参数,托管开青龙,托管开游侠
+	"无☆风不起浪":"穆妙羽-狐苍雁-妙无心-八部龙将,0,1,1,碧血心法:15;天波九转:12;燎原百破:40;幽影幻虚步:20;九溪断月枪:40,0,0",
+	"独☆钓寒江雪":"步惊鸿-郭济-风无痕-宇文无敌,0,1,1,孔雀翎:20;天师灭神剑:13;幽影幻虚步:20,0,0",
+	"多☆情应笑我":"宇文无敌-巫夜姬-玄月研,0,1,1,碧血心法:15;天波九转:12;九天龙吟剑法:42;覆雨剑法:40;金刚不坏功:7;九阳神功:9;太极神功:10;真武七截剑:12;帝王剑法:10;九阴噬骨刀:14;九阴真经:10;葵花宝典:8;七星剑法:10;天师灭神剑:13;拈花解语鞭:20;捆仙鞭法:14;十怒绞龙索：20,0,0",
+	"剑行":"默认,0,1,1,排云掌法:20;真武七截剑:13;如来神掌:20;霜寒十四棍:14;乾坤大挪移:15;易筋经神功:15,1,1",
+	"李逍遥_":"默认,0,1,1,无相金刚掌:14;八荒功:15;九阴噬骨刀:15;真武七截剑:13,1,1",
+	"道花1":"默认,0,1,1,排云掌法:20;黯然销魂掌:14;斗战棍典:15;易筋经神功:15,1,1",
+	"施工员":"默认,0,1,1,霜寒十四棍:14;斗战棍典:15;真武七截剑:13;幽影幻虚步:20;九溪断月枪:20,0,0",
+	"飘过云朵":"默认,0,1,1,排云掌法:40;如来神掌:40;千影百伤棍:40;九天龙吟剑法:42;覆雨剑法:40;破军棍诀:40,0,0",
+};
+skillset4={//按号分类设置帮购物开关，帮购物清单
+	"无☆风不起浪":"1,默认",
+	"多☆情应笑我":"1,默认",
+	"飘过云朵":"1,空识卷轴;隐武竹筏",
+};
+tuoguan=2;//可设置0，1，2；0表示关闭托管，1表示开启托管定时完成任务，2表示托管时自动进行的点vip操作会额外点掉钓鱼和排行榜
+tuoguantime="6:1";//自动执行托管任务的24小时制时间（注意，时间设置的分钟数如果小于10，前面不用加0，比如3:08不对，应该3:8;托管功能只有授权用户可用，其他用户设置了也没用）
+ql_killset = 1;// 托管模式青龙杀人选项 0为杀好人  1为杀恶人
+vipzx=1;//默认定时早上5.55点正邪20次，0为关闭，1为点正，2为点邪
+tupojiasu=1;//续突破是否使用加速卡，1表示续的时候顺带加速，0默认关闭加速。本功能暂在开发中,推荐在一江湖与一绝学双突时候开启
+yc_flag=0;//远程控制开关，仅授权用户有效（0默认关闭，1默认开启）
+buything=1;//是否每天定时自动使用开发者帮派购物功能（消耗帮派活跃度），0表示关闭定时自动，关闭后可在开发者选项手动使用
+buythinglist='引路蜂;突破丹;保险卡;高级突破丹;空识卷轴;狗年礼券';//帮派购物清单(用分号隔开)
+tg_pt=1;//托管模式是否每天自动完成拼图任务(0关闭,1只生效pintuhao里面的授权号，2生效所有挂此脚本的授权用户)
+tg_ptdingshi='0;0:30;无☆风不起浪-多☆情应笑我';//定时独立托管拼图（开关,时间,角色）
+tg_ql=1;//托管模式是否每天自动开青龙
+tg_yx=1;//托管模式是否每天自动开游侠
+tgeat_jhl=0;//托管模式是否每天自动吃江湖令
+tgeat_bpl=1;//托管模式是否每天自动吃帮派令
+tggj_tiexue=0;//托管铁血阿不烽火处挂机
+pintuhao="无☆风不起浪-多☆情应笑我-独☆钓寒江雪-施工员-飘过云朵";//托管拼图生效的号（英文-号隔开）
+tg_rc=1;//托管模式是否每天自动购买日常任务（花费70元宝获得400w左右潜能）
+pifu=0;//初始默认皮肤(0-4)
+autozx="23:10;5:50;剑行;1";//自动刷正邪定时开启时间;定时关闭时间;刷正邪的号名字;0杀恶人，1杀好人
+qxList_inputs = "步惊鸿；浪唤雨；逆风舞；庞统；火云邪神；郭济；吴缜；王蓉；风南；狐苍雁；李宇飞；风行骓；护竺；玄月研；狼居胥；烈九州；穆妙羽；宇文无敌；李玄霸；八部龙将；风无痕；厉沧若；夏岳卿；妙无心；巫夜姬";
+//默认撩奇侠顺序
+aiqx_order="郭济-火云邪神-风无痕-宇文无敌-厉沧若-穆妙羽-妙无心-八部龙将-巫夜姬-玄月研-夏岳卿-狼居胥-烈九州-李玄霸";//默认智能奇侠亲密顺序
+ai_tupolist="九天龙吟剑法:21;如来神掌:20;排云掌法:20;道种心魔经:21;千影百伤棍:20;燎原百破:20;破军棍诀:20;";//智能换突破及默认次数设置
+tf_killlist="段老大-二娘-岳老三-云老四,段老大";//逃犯需求：本服,跨服 （只设置恶人名字，杀人选项靠开逃犯开关控制）
+ai_autotupo=0;//智能换突破开关
+aiqx_mode=1;//默认智能奇侠模式：0表示出4次秘境，1表示出5次秘境
+tg_qx=0;//默认托管模式是否智能奇侠
+autoqixia="0,火云邪神,0,1";//默认：全自动奇侠开关,亲密奇侠名字,奇侠模式（0表示手动对话或者比试打奇侠小号1表示赠送1个金锭2表示全部送15金锭）,秘境触发次数(0表示4次1表示5次)
+autopifu=1;//自动随时间换皮肤
+banxiaohao="流浪-道花2-道花3-天下第1";//禁止自动打坐睡觉签到的号（可用于挂飞机本自动组队，避免自己跑出副本，也可用于打奇侠大号开奇侠自动切磋）
+Enemylist = "[1]阿不;[1]魏娇;[1]绕指·云;[1]末日召唤;[1]抓狂;[1]绘羽;[1]~陌上花开~;[1]南英;[1]李寻花;[1]奈何离歌;[1]纵横老野猪;";//默认敌人设置
+Friendlist = "[21]路人甲◆孤傲;[21]男主角◆番茄;[21]出品人◆风云;[21]临记◆卫芷泫;[21]制片人◆戏雨;[21]凌少;[21]空城◆旧梦;[21]春不老◆青木;[1]阿不;[1]纵横老野猪;[1]无头苍蝇;[1]欢乐剑客;[1]~陌上花开~;[1]李寻花;[1]凉城惜暖玉;[1]地府-摩诃王;[2]板砖;[2]陳小神;[7]小飞;[7]冷泉心影;[12]一炮泯恩仇;[1]寒夜·斩;[4]【人间】不舍;[1]魏娇;[4]十方禅师;[1]烽火戲诸侯;[4]【人间】雨修;";
+//默认大佬，盟友设置
+//注意：托管模式只对授权用户生效，会在指定时间完成托管任务过后，自动开启青龙游侠功能
+
+//警告：以下区域不可改动！！！
+
+var encode_version = 'sojson.v4';var __0x1f090=['CDHChcOlwpI=','AhICN8KVw4I=','bcKTTg3ClsKDw6PDvA==','w6Y5w7wYw5TDsnfDqcOkPBbDo8K2w6IRw7o=','RsOQw7rDhMK9','HkfDgw==','FTwaw4fDtA==','wqfDr0zDpMKh','LcK+EHzDlQ==','w5LDvcOBwrfDvw==','wpsaw5tdwp0=','DMOPVMKWw5s=','wq0sw5hYw7o=','wqvCm8KLw4Ai','FmDCmTvCmw==','woMxwrzCvyc=','fsKMRATCsw==','UB1MLxM=','w6M/wqQjw59uwozCmsK0','TcKARsKgXg==','JBEwB8KA','FkcjAAk=','b8KjUzvCrg==','QcK/f8KvUg==','YsKvw4Ep','BVPDtizDiA==','JgrDs8Oqwpk=','QMKBVCPCsA==','wo/Ci8KCPw==','NFHChMKrNQ==','wr7DkXLDl8KlBDdoM8OcQ0lYwoDDpwDDtMOuwo4NQhspwrIlw5IoKQ==','UsOuw5/CtcOy','wpfDvnDDusKpMTg=','BsKfGlTDkw==','KXbDkh/Djw==','XxrCq0QQw6U=','PwXCkG/CnXJeXxnDtA==','S8OGHcKcw4AMMyjDjm4=','H3HDmzHDow==','CxbCusOcwps=','DhgJIMK1w5k/ecKUDA==','Y2jDvMKBPA==','J1DDgB3DpA==','wo0Jw5ZowoDCgw==','cTLDhjlmTA==','QgBqXkjCqcKJ','w7xkwpEoIg==','w7fDrsOswrLDrcO6','w4wuwocZw6jCkA==','wpoNwoxjw6E=','QcOAGMKLw7ssMQ==','w67Dm8Otwq3Dlg==','w7rDu8OywrnDoA==','w7BvDcKmwp8=','PkvDrMKYw7R6w7Bia8KFw6lcw4/DuFHDmULCjgjDrcOscipAw5xjwpvDuzdUdS4SLU8aWlPCs8Otw40Aw5nCl8KKJg11wqJ9wqkfw4TCjRp+Rxdrw4MTw6w=','KBrDtsOZwps=','wp0HTA7CpA==','woLDhw4awoM=','wqgBw4JPw6I=','GR7CisOwwpE=','IlcPw5U=','w64cw7fCmcKU','woXCl8KGOzo=','wrUGwoHCrw==','DBrCsHTCsw==','w5ouwoMrw6o=','wq8zw7RAw68=','w6gbWxnCrg==','Q8OZGcKEw4o=','D28nB8KYwrp/wprCqCLDk0E=','wrE5eTvCpMOMwq3DvA==','MnbCombCkQ==','EQfDtMOewrU=','G3g4BsK6wrF7','eCrDtEF9','RcKvw6Icw4Q=','CDQnE8KB','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','MnYNBiU=','w4JMw6jDg8K5dw==','RMOLEsKJw7cL','fcKabcKcbQ==','UMKCWMKjeA==','w70Lw6rCicKK','wrfCssKCJj8=','NF7ClWrCqA==','w6Ufw7wKw6o=','B8OJU8Kqw7A='];(function(_0x4b1d14,_0x4e3f7a){var _0x321cef=function(_0x4e62ed){while(--_0x4e62ed){_0x4b1d14['push'](_0x4b1d14['shift']());}};_0x321cef(++_0x4e3f7a);}(__0x1f090,0x10c));var _0x4f1a=function(_0x29f756,_0x37bb53){_0x29f756=_0x29f756-0x0;var _0x179216=__0x1f090[_0x29f756];if(_0x4f1a['initialized']===undefined){(function(){var _0x5c17a6=typeof window!=='undefined'?window:typeof process==='object'&&typeof require==='function'&&typeof global==='object'?global:this;var _0xb1bcff='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';_0x5c17a6['atob']||(_0x5c17a6['atob']=function(_0x348990){var _0x2af673=String(_0x348990)['replace'](/=+$/,'');for(var _0x4d194b=0x0,_0x107fe4,_0x31b535,_0x2b2051=0x0,_0x5ed883='';_0x31b535=_0x2af673['charAt'](_0x2b2051++);~_0x31b535&&(_0x107fe4=_0x4d194b%0x4?_0x107fe4*0x40+_0x31b535:_0x31b535,_0x4d194b++%0x4)?_0x5ed883+=String['fromCharCode'](0xff&_0x107fe4>>(-0x2*_0x4d194b&0x6)):0x0){_0x31b535=_0xb1bcff['indexOf'](_0x31b535);}return _0x5ed883;});}());var _0x26a82b=function(_0x44b9da,_0x5715ff){var _0x2a21b4=[],_0x5250e9=0x0,_0x5a4b19,_0x257794='',_0x12edbd='';_0x44b9da=atob(_0x44b9da);for(var _0x4696ae=0x0,_0x1ba57a=_0x44b9da['length'];_0x4696ae<_0x1ba57a;_0x4696ae++){_0x12edbd+='%'+('00'+_0x44b9da['charCodeAt'](_0x4696ae)['toString'](0x10))['slice'](-0x2);}_0x44b9da=decodeURIComponent(_0x12edbd);for(var _0x2a3d2c=0x0;_0x2a3d2c<0x100;_0x2a3d2c++){_0x2a21b4[_0x2a3d2c]=_0x2a3d2c;}for(_0x2a3d2c=0x0;_0x2a3d2c<0x100;_0x2a3d2c++){_0x5250e9=(_0x5250e9+_0x2a21b4[_0x2a3d2c]+_0x5715ff['charCodeAt'](_0x2a3d2c%_0x5715ff['length']))%0x100;_0x5a4b19=_0x2a21b4[_0x2a3d2c];_0x2a21b4[_0x2a3d2c]=_0x2a21b4[_0x5250e9];_0x2a21b4[_0x5250e9]=_0x5a4b19;}_0x2a3d2c=0x0;_0x5250e9=0x0;for(var _0x17c79e=0x0;_0x17c79e<_0x44b9da['length'];_0x17c79e++){_0x2a3d2c=(_0x2a3d2c+0x1)%0x100;_0x5250e9=(_0x5250e9+_0x2a21b4[_0x2a3d2c])%0x100;_0x5a4b19=_0x2a21b4[_0x2a3d2c];_0x2a21b4[_0x2a3d2c]=_0x2a21b4[_0x5250e9];_0x2a21b4[_0x5250e9]=_0x5a4b19;_0x257794+=String['fromCharCode'](_0x44b9da['charCodeAt'](_0x17c79e)^_0x2a21b4[(_0x2a21b4[_0x2a3d2c]+_0x2a21b4[_0x5250e9])%0x100]);}return _0x257794;};_0x4f1a['rc4']=_0x26a82b;_0x4f1a['data']={};_0x4f1a['initialized']=!![];}var _0x5285ae=_0x4f1a['data'][_0x29f756];if(_0x5285ae===undefined){if(_0x4f1a['once']===undefined){_0x4f1a['once']=!![];}_0x179216=_0x4f1a['rc4'](_0x179216,_0x37bb53);_0x4f1a['data'][_0x29f756]=_0x179216;}else{_0x179216=_0x5285ae;}return _0x179216;};eval(function(_0x41afe5,_0x4ea0a6,_0x445182,_0x50fbb4,_0x40ff1b,_0x4c35db){var _0x33cbb6={'XQfAr':function _0x3b9472(_0x114504,_0x4a0e5d){return _0x114504+_0x4a0e5d;},'IvCbf':function _0x199bb5(_0x458f92,_0x13f444){return _0x458f92!==_0x13f444;},'zvcRi':'undefined','mMOEs':function _0x236ccb(_0x37fb87,_0x5079d9){return _0x37fb87===_0x5079d9;},'wouZv':_0x4f1a('0x0','mH8o'),'YkMfS':function _0x17e949(_0xa2c957,_0x535518){return _0xa2c957===_0x535518;},'dTYSW':_0x4f1a('0x1','Rq]y'),'BRNdb':function _0x5490aa(_0x5549ad,_0x2b42e8){return _0x5549ad===_0x2b42e8;},'NuAca':'.JyrAmyVtou.cnjhEXDaHvTgWOwbeYECCvj','ZDHFb':function _0x1ebec9(_0x13ee14,_0x21c3ad){return _0x13ee14==_0x21c3ad;},'lCAhN':function _0x5ef06f(_0xbdd1e4,_0x17adf3){return _0xbdd1e4==_0x17adf3;},'jceOk':function _0x4d3a07(_0xad0bb0,_0x19a689){return _0xad0bb0==_0x19a689;},'TbZDI':function _0x4757e3(_0x94d6b2,_0x32f846){return _0x94d6b2&&_0x32f846;},'Dfybu':function _0x203ecb(_0x65735f,_0x358e1b){return _0x65735f<_0x358e1b;},'grohd':function _0x169cc4(_0x26eff3,_0x592ebf){return _0x26eff3!==_0x592ebf;},'uPoxO':function _0x26e6ee(_0x11a111){return _0x11a111();},'BJhiu':_0x4f1a('0x2','P[A4'),'JzFjO':function _0x595531(_0x343c14,_0x35dc2e){return _0x343c14(_0x35dc2e);},'gdiQJ':_0x4f1a('0x3','#Frl'),'rBoMn':function _0x497373(_0x3465c4,_0x500302,_0x5044e8){return _0x3465c4(_0x500302,_0x5044e8);},'NtFXX':function _0x1a1851(_0x52ca6c,_0x2f4c98){return _0x52ca6c+_0x2f4c98;},'FkCwq':function _0x3fff93(_0x1f4a5e,_0x37fffe){return _0x1f4a5e>_0x37fffe;},'kwejI':function _0x55dc38(_0x2e104b,_0x532c79){return _0x2e104b%_0x532c79;},'sgDma':_0x4f1a('0x4','6#DG'),'BtLri':function _0x45d6b6(_0x20dd9d,_0x475774,_0x1c782a){return _0x20dd9d(_0x475774,_0x1c782a);},'eDOAw':function _0x1066fb(_0x22f791,_0xa4fe4e){return _0x22f791(_0xa4fe4e);}};var _0xf8cfd=function(){var _0x428293=!![];return function(_0xf0cc00,_0x1316d1){var _0x11e768=_0x428293?function(){if(_0x1316d1){var _0x9c7a91=_0x1316d1[_0x4f1a('0x5','9jYK')](_0xf0cc00,arguments);_0x1316d1=null;return _0x9c7a91;}}:function(){};_0x428293=![];return _0x11e768;};}();var _0x48ea98=_0x33cbb6[_0x4f1a('0x6','8cVS')](_0xf8cfd,this,function(){var _0x4f6dab={'ujdjQ':function _0x5ec75f(_0xc01e3,_0x53b979){return _0x33cbb6[_0x4f1a('0x7','zuEn')](_0xc01e3,_0x53b979);},'upbdb':'item'};var _0x3c0fb3=_0x33cbb6[_0x4f1a('0x8','6*9#')](typeof window,_0x33cbb6[_0x4f1a('0x9','%i2B')])?window:_0x33cbb6[_0x4f1a('0xa','yNZG')](typeof process,_0x33cbb6[_0x4f1a('0xb','A]m[')])&&_0x33cbb6[_0x4f1a('0xc','tec2')](typeof require,_0x33cbb6[_0x4f1a('0xd','gt9e')])&&_0x33cbb6[_0x4f1a('0xe','1ru$')](typeof global,'object')?global:this;var _0x5b49d7=function(){var _0x3991e5={'HUzVA':function _0xe3e68(_0x39ea01,_0x2a36cb){return _0x39ea01<_0x2a36cb;},'IaXUv':function _0x234a39(_0x3bc713,_0x155555){return _0x3bc713>_0x155555;},'WABoX':function _0x48882f(_0xb14da8,_0x181cce){return _0xb14da8+_0x181cce;},'dEsUL':function _0x43e998(_0x172aa1,_0x47165e){return _0x4f6dab[_0x4f1a('0xf','Rq]y')](_0x172aa1,_0x47165e);},'DjCYM':function _0x2150d9(_0x408ba0,_0x5734ba){return _0x408ba0+_0x5734ba;},'KgtMR':function _0x15966e(_0x340a7a,_0x71325c){return _0x4f6dab[_0x4f1a('0x10','v[!f')](_0x340a7a,_0x71325c);}};return{'key':_0x4f6dab['upbdb'],'value':_0x4f1a('0x11','jT@1'),'getAttribute':function(){for(var _0x36ab4a=0x0;_0x3991e5[_0x4f1a('0x12','4JeN')](_0x36ab4a,0x3e8);_0x36ab4a--){var _0x3c5019=_0x3991e5[_0x4f1a('0x13','mH8o')](_0x36ab4a,0x0);switch(_0x3c5019){case!![]:return _0x3991e5[_0x4f1a('0x14','iKq8')](_0x3991e5[_0x4f1a('0x15','Rq]y')](_0x3991e5[_0x4f1a('0x16','4JeN')](this[_0x4f1a('0x17','vHpM')],'_'),this[_0x4f1a('0x18','onc#')])+'_',_0x36ab4a);default:_0x3991e5[_0x4f1a('0x19','KKXh')](_0x3991e5[_0x4f1a('0x1a','Rq]y')](this[_0x4f1a('0x1b','O5#r')],'_'),this[_0x4f1a('0x1c','6#DG')]);}}}()};};var _0x19fe1d=new RegExp(_0x4f1a('0x1d','8cVS'),'g');var _0x314f5a=_0x33cbb6[_0x4f1a('0x1e','0$y5')][_0x4f1a('0x1f','8cVS')](_0x19fe1d,'')[_0x4f1a('0x20','zuEn')](';');var _0x1ec8ef;var _0x36b5db;for(var _0x4208c3 in _0x3c0fb3){if(_0x33cbb6[_0x4f1a('0x21','onc#')](_0x4208c3[_0x4f1a('0x22','S5Cd')],0x8)&&_0x4208c3[_0x4f1a('0x23','2&4X')](0x7)==0x74&&_0x4208c3['charCodeAt'](0x5)==0x65&&_0x4208c3[_0x4f1a('0x24',']4E^')](0x3)==0x75&&_0x33cbb6[_0x4f1a('0x25','onc#')](_0x4208c3['charCodeAt'](0x0),0x64)){_0x1ec8ef=_0x4208c3;break;}}for(var _0x40a4cd in _0x3c0fb3[_0x1ec8ef]){if(_0x33cbb6[_0x4f1a('0x26','&AZF')](_0x40a4cd['length'],0x6)&&_0x40a4cd[_0x4f1a('0x27','mH8o')](0x5)==0x6e&&_0x33cbb6[_0x4f1a('0x28','9qDf')](_0x40a4cd['charCodeAt'](0x0),0x64)){_0x36b5db=_0x40a4cd;break;}}if(_0x33cbb6[_0x4f1a('0x29','onc#')](!_0x1ec8ef,!_0x36b5db)||!_0x3c0fb3[_0x1ec8ef]&&!_0x3c0fb3[_0x1ec8ef][_0x36b5db]){return;}var _0xcfe8b1=_0x3c0fb3[_0x1ec8ef][_0x36b5db];var _0x51cb1=![];for(var _0x17f256=0x0;_0x33cbb6['Dfybu'](_0x17f256,_0x314f5a['length']);_0x17f256++){var _0x36b5db=_0x314f5a[_0x17f256];var _0x4bed29=_0xcfe8b1[_0x4f1a('0x2a','%i2B')]-_0x36b5db[_0x4f1a('0x2b','NxTR')];var _0x2fa52e=_0xcfe8b1[_0x4f1a('0x2c','1iuX')](_0x36b5db,_0x4bed29);var _0x58d330=_0x33cbb6[_0x4f1a('0x2d','fteH')](_0x2fa52e,-0x1)&&_0x33cbb6['BRNdb'](_0x2fa52e,_0x4bed29);if(_0x58d330){if(_0xcfe8b1[_0x4f1a('0x2e','6*9#')]==_0x36b5db[_0x4f1a('0x2f','sr2$')]||_0x33cbb6[_0x4f1a('0x30','cQ&o')](_0x36b5db[_0x4f1a('0x31',']4E^')]('.'),0x0)){_0x51cb1=!![];}break;}}if(!_0x51cb1){data;}else{return;}_0x33cbb6['uPoxO'](_0x5b49d7);});_0x33cbb6[_0x4f1a('0x32','6*9#')](_0x48ea98);var _0x306654=function(){var _0x56087d=!![];return function(_0xc0e641,_0x54de0c){var _0x2e9263=_0x56087d?function(){if(_0x54de0c){var _0x536a7f=_0x54de0c[_0x4f1a('0x33','6*9#')](_0xc0e641,arguments);_0x54de0c=null;return _0x536a7f;}}:function(){};_0x56087d=![];return _0x2e9263;};}();(function(){var _0x530311={'xkUca':_0x33cbb6[_0x4f1a('0x34','CVNp')],'eSjDF':_0x4f1a('0x35','KKXh'),'zejUv':function _0x3ffc2f(_0xd6529a,_0x24ded2){return _0x33cbb6[_0x4f1a('0x36','KKXh')](_0xd6529a,_0x24ded2);},'QqYbm':function _0x3c7240(_0x431580,_0x10b168){return _0x33cbb6[_0x4f1a('0x37','#)OJ')](_0x431580,_0x10b168);},'PwAim':_0x33cbb6[_0x4f1a('0x38','i]cw')],'upYBc':function _0xa029a1(_0x5b7dd3){return _0x33cbb6['uPoxO'](_0x5b7dd3);}};_0x33cbb6[_0x4f1a('0x39','A]m[')](_0x306654,this,function(){var _0x5ab97b=new RegExp(_0x530311[_0x4f1a('0x3a','&AZF')]);var _0x216d58=new RegExp(_0x530311['eSjDF'],'i');var _0x9f2102=_0x530311['zejUv'](_0x427c6f,_0x4f1a('0x3b','V3^('));if(!_0x5ab97b['test'](_0x530311[_0x4f1a('0x3c','3^8]')](_0x9f2102,_0x4f1a('0x3d','O5#r')))||!_0x216d58[_0x4f1a('0x3e','1ru$')](_0x9f2102+_0x530311[_0x4f1a('0x3f','2&4X')])){_0x530311[_0x4f1a('0x40','sr2$')](_0x9f2102,'0');}else{_0x530311[_0x4f1a('0x41','A]m[')](_0x427c6f);}})();}());_0x40ff1b=function(_0x39ac44){return _0x33cbb6[_0x4f1a('0x42','O9HA')](_0x33cbb6['Dfybu'](_0x39ac44,_0x4ea0a6)?'':_0x40ff1b(parseInt(_0x39ac44/_0x4ea0a6)),_0x33cbb6['FkCwq'](_0x39ac44=_0x33cbb6[_0x4f1a('0x43',']4E^')](_0x39ac44,_0x4ea0a6),0x23)?String[_0x4f1a('0x44','lyeQ')](_0x33cbb6['NtFXX'](_0x39ac44,0x1d)):_0x39ac44[_0x4f1a('0x45','#)OJ')](0x24));};if(!''['replace'](/^/,String)){while(_0x445182--)_0x4c35db[_0x33cbb6[_0x4f1a('0x46','Dz$Q')](_0x40ff1b,_0x445182)]=_0x50fbb4[_0x445182]||_0x40ff1b(_0x445182);_0x50fbb4=[function(_0x2715ca){return _0x4c35db[_0x2715ca];}];_0x40ff1b=function(){return _0x33cbb6[_0x4f1a('0x47','KKXh')];};_0x445182=0x1;};while(_0x445182--)if(_0x50fbb4[_0x445182])_0x41afe5=_0x41afe5[_0x4f1a('0x48','lyeQ')](new RegExp(_0x33cbb6[_0x4f1a('0x49','wqhX')](_0x33cbb6[_0x4f1a('0x4a','vHpM')]('\x5cb',_0x33cbb6[_0x4f1a('0x4b','mH8o')](_0x40ff1b,_0x445182)),'\x5cb'),'g'),_0x50fbb4[_0x445182]);return _0x41afe5;}(_0x4f1a('0x4c','A]m['),0x3e,0xa3,_0x4f1a('0x4d','vHpM')[_0x4f1a('0x4e','iKq8')]('|'),0x0,{}));eval(uncompile('%9F%D7%D3%92%93%93%5D%5D%84%D3%D2%D8%E2%D2%D3%E2%A2%91%D5%D7%C6%D5%D9%AA%B1%D1%D2%D2%D3%E2%9CO%9A%D6%D5%DB%D9%E4%9BPd'));eval(uncompile('%DB%A1%A1%D8%D9%B5%B5%E8%E6%DB%CB%D7%E9%D9%8DO%9A%E5%D5%8ASLG0q%DC%E8%E4%AAi%5E%9F%DC%CD%DA%DD%D6%D7%C6%CE%D2%D7%A0%91%D1%9D%9F%D1%CF%9D%A4%E5%DC%DB%D0%C5%D7%A2%93%DE%E6%E1%E3%D8%D3%CA%CF%9Ded%A6%A7edbc%93%DE%E6%E1%E3%D8%D3%CA%CF%A4db%9D%D7%E1%E7%D5%CD%D8%DA%D3%DC%A5%98%DD%9APd'));eval(uncompile('%81%D3%D2%D8%E2%D2%D3%E2%A2%96%CD%C6%C5%92%8F%D1%E0%D5%D3%D2%A7%AB%D1%D5%D0%8C%9B%9Cd'));function _0x427c6f(_0x5c050f){var _0x235291={'xOQjr':function _0xbacd26(_0x546f3f,_0x27035b){return _0x546f3f===_0x27035b;},'iQzCe':_0x4f1a('0x4f','W@gS'),'UWdUg':function _0x495926(_0x16fefd){return _0x16fefd();},'BfDrs':function _0x4c990c(_0x3ff024,_0x1f489d){return _0x3ff024+_0x1f489d;},'QMetk':function _0x2d2c04(_0x8affc6,_0x227711){return _0x8affc6/_0x227711;},'LRqfv':_0x4f1a('0x50',']4E^'),'eSnqJ':function _0x232878(_0x38854c,_0x54c383){return _0x38854c===_0x54c383;},'fKHyX':function _0x5ce272(_0x1e3450,_0x4b6bc7){return _0x1e3450%_0x4b6bc7;},'iDZvb':function _0x56c577(_0xe0cf36,_0x4b148f){return _0xe0cf36(_0x4b148f);}};function _0x2d840c(_0x5150ed){if(_0x235291[_0x4f1a('0x51','4JeN')](typeof _0x5150ed,_0x235291['iQzCe'])){var _0x3f2693=function(){while(!![]){}};return _0x235291[_0x4f1a('0x52','4JeN')](_0x3f2693);}else{if(_0x235291[_0x4f1a('0x53','3^8]')]('',_0x235291[_0x4f1a('0x54','O5#r')](_0x5150ed,_0x5150ed))[_0x235291[_0x4f1a('0x55','Dz$Q')]]!==0x1||_0x235291[_0x4f1a('0x56','P[A4')](_0x235291[_0x4f1a('0x57','yNZG')](_0x5150ed,0x14),0x0)){debugger;}else{debugger;}}_0x235291[_0x4f1a('0x58','&AZF')](_0x2d840c,++_0x5150ed);}try{if(_0x5c050f){return _0x2d840c;}else{_0x2d840c(0x0);}}catch(_0x58052b){}}setInterval(function(){var _0x241c8f={'CUbwS':function _0x5d333c(_0x47257a){return _0x47257a();}};_0x241c8f['CUbwS'](_0x427c6f);},0xfa0);;encode_version = 'sojson.v4';
